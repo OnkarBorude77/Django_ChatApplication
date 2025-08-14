@@ -18,6 +18,9 @@
                 </div>
               {% endif %}
             </a>
+          {% empty %}
+            <div class="text-muted">No contacts yet.</div>
+          {% endfor %}
         </div>
         <a class="btn btn-outline-secondary btn-sm mt-3 w-100" href="{% url 'home' %}">Back</a>
       </div>
