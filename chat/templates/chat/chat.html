@@ -18,10 +18,6 @@
                 </div>
               {% endif %}
             </a>
-         {% empty %}
-         <div id="no-messages" class="text-center text-muted">No messages yet</div>
-         {% endfor %}
-
         </div>
         <a class="btn btn-outline-secondary btn-sm mt-3 w-100" href="{% url 'home' %}">Back</a>
       </div>
@@ -79,23 +75,28 @@
   chatSocket.onclose = () => console.log("WebSocket closed");
 
   chatSocket.onmessage = (e) => {
-  const data = JSON.parse(e.data || "{}");
-  if (!data.message) return;
+    const data = JSON.parse(e.data || "{}");
+    if (!data.message) return;
 
-  // Remove placeholder if exists
-  const placeholder = document.getElementById("no-messages");
-  if (placeholder) placeholder.remove();
+    const isMe = data.sender === "{{ request.user.username }}";
+    const wrapper = document.createElement("div");
+    wrapper.className = "mb-2 " + (isMe ? "text-end" : "");
+    wrapper.innerHTML = `
+      <div class="chat-bubble ${isMe ? "msg-me" : "msg-them"}">
+        <div class="small text-muted mb-1">${data.sender}</div>
+        <div>${data.message}</div>
+      </div>`;
+    chatbox.appendChild(wrapper);
+    scrollToBottom();
+  };
 
-  const isMe = data.sender === "{{ request.user.username }}";
-  const wrapper = document.createElement("div");
-  wrapper.className = "mb-2 " + (isMe ? "text-end" : "");
-  wrapper.innerHTML = `
-    <div class="chat-bubble ${isMe ? "msg-me" : "msg-them"}">
-      <div class="small text-muted mb-1">
-        ${data.sender} · just now
-      </div>
-      <div>${data.message}</div>
-    </div>`;
-  chatbox.appendChild(wrapper);
-  scrollToBottom();
-};
+  btn.onclick = () => {
+    const val = input.value.trim();
+    if (!val) return;
+    chatSocket.send(JSON.stringify({ message: val }));
+    input.value = "";
+  };
+
+  input.addEventListener("keydown", (e) => { if (e.key === "Enter") btn.click(); });
+</script>
+{% endblock %}
