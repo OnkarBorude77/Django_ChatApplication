@@ -45,12 +45,14 @@ class ChatConsumer(AsyncWebsocketConsumer):
        
         await self.create_message(sender.id, self.room_key, msg)
         await self.channel_layer.group_send(
-            self.group_name,
-            {
-                "type": "chat_message", 
-                "sender": sender.username,
-            },
-        )
+    self.group_name,
+    {
+        "type": "chat_message",
+        "message": msg,   
+        "sender": sender.username,
+    },
+)
+
 
     async def chat_message(self, event):
         await self.send(text_data=json.dumps({
