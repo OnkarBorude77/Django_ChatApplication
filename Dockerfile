@@ -17,7 +17,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Expose port
-EXPOSE 8080
+EXPOSE 10000
 
 # Run Daphne ASGI server (do NOT run collectstatic here)
-CMD python manage.py migrate && python manage.py collectstatic --noinput && daphne -b 0.0.0.0 -p 8080 chatapp.asgi:application
+CMD python manage.py migrate && python manage.py collectstatic --noinput && daphne -b 0.0.0.0 -p 10000 chatapp.asgi:application
+ 
