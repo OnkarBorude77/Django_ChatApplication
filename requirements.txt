@@ -1,0 +1,8 @@
+Django>=4.2
+daphne
+channels
+channels_redis
+psycopg[binary]
+dj-database-url
+whitenoise
+python-dotenv

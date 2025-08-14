@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% block title %}Chat with {{ room_name }} · NESZEN{% endblock %}
+
+{% block content %}
+<div class="row">
+  <!-- Sidebar -->
+  <div class="col-md-3">
+    <div class="card shadow-sm mb-3">
+      <div class="card-body">
+        <h6 class="mb-3">People</h6>
+        <div class="list-group small">
+          {% for item in partners_info %}
+            <a class="list-group-item list-group-item-action {% if item.user.username == room_name %}active{% endif %}"
+               href="{% url 'chat_room' item.user.username %}">
+              @{{ item.user.username }}
+              {% if item.last %}
+                <div class="text-muted small mt-1">
+                  {{ item.last.content|truncatechars:28 }}
+                </div>
+              {% endif %}
+            </a>
+          {% empty %}
+            <div class="text-muted">No contacts yet.</div>
+          {% endfor %}
+        </div>
+        <a class="btn btn-outline-secondary btn-sm mt-3 w-100" href="{% url 'home' %}">Back</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chat area -->
+  <div class="col-md-9">
+    <div class="card shadow-sm">
+      <div class="card-header bg-white d-flex align-items-center">
+        <strong>Chat with @{{ room_name }}</strong>
+      </div>
+      <div id="chatbox" class="card-body" style="height:420px; overflow:auto; background:#fff;">
+        {% for m in chats %}
+          <div class="mb-2 {% if m.sender_id == request.user.id %}text-end{% endif %}">
+            <div class="chat-bubble {% if m.sender_id == request.user.id %}msg-me{% else %}msg-them{% endif %}">
+              <div class="small text-muted mb-1">
+                {{ m.sender.username }} · {{ m.timestamp|date:"M d, H:i" }}
+              </div>
+              <div>{{ m.content }}</div>
+            </div>
+          </div>
+        {% empty %}
+          <div class="text-center text-muted">No messages yet</div>
+        {% endfor %}
+      </div>
+      <div class="card-footer bg-white">
+        <div class="input-group">
+          <input id="messageInput" type="text" class="form-control" placeholder="Type a message…">
+          <button id="sendBtn" class="btn btn-primary">Send</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{{ room_name|json_script:"room_name_json" }}
+{% endblock %}
+
+{% block scripts %}
+<script>
+  const roomName = JSON.parse(document.getElementById("room_name_json").textContent);
+  const chatbox = document.getElementById("chatbox");
+  const input = document.getElementById("messageInput");
+  const btn = document.getElementById("sendBtn");
+
+  function scrollToBottom(){ chatbox.scrollTop = chatbox.scrollHeight; }
+  scrollToBottom();
+
+  const protocol = window.location.protocol === "https:" ? "wss" : "ws";
+  const wsUrl = `${protocol}://${window.location.host}/ws/chat/${encodeURIComponent(roomName)}/`;
+  const chatSocket = new WebSocket(wsUrl);
+
+  chatSocket.onopen = () => console.log("WebSocket connected");
+  chatSocket.onclose = () => console.log("WebSocket closed");
+
+  chatSocket.onmessage = (e) => {
+    const data = JSON.parse(e.data || "{}");
+    if (!data.message) return;
+
+    const isMe = data.sender === "{{ request.user.username }}";
+    const wrapper = document.createElement("div");
+    wrapper.className = "mb-2 " + (isMe ? "text-end" : "");
+    wrapper.innerHTML = `
+      <div class="chat-bubble ${isMe ? "msg-me" : "msg-them"}">
+        <div class="small text-muted mb-1">${data.sender}</div>
+        <div>${data.message}</div>
+      </div>`;
+    chatbox.appendChild(wrapper);
+    scrollToBottom();
+  };
+
+  btn.onclick = () => {
+    const val = input.value.trim();
+    if (!val) return;
+    chatSocket.send(JSON.stringify({ message: val }));
+    input.value = "";
+  };
+
+  input.addEventListener("keydown", (e) => { if (e.key === "Enter") btn.click(); });
+</script>
+{% endblock %}

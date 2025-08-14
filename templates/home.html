@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Start a chat · NESZEN{% endblock %}
+{% block content %}
+<h3 class="mb-3">Start a chat</h3>
+<div class="list-group shadow-sm">
+  {% for u in users %}
+    <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+       href="{% url 'chat_room' u.username %}">
+      <span>@{{ u.username }}</span>
+      <span class="text-muted small">Message</span>
+    </a>
+  {% empty %}
+    <div class="list-group-item">No other users yet.</div>
+  {% endfor %}
+</div>
+{% endblock %}

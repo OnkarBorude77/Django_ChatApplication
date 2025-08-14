@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Welcome · NESZEN{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-8 text-center">
+    <h1 class="display-5 mb-3">Welcome to NESZEN Chat</h1>
+    <p class="lead text-muted">Create an account and start chatting instantly.</p>
+    <div class="mt-4">
+      <a href="{% url 'signup' %}" class="btn btn-primary me-2">Create Account</a>
+      <a href="{% url 'login' %}" class="btn btn-outline-secondary">Login</a>
+    </div>
+  </div>
+</div>
+{% endblock %}
