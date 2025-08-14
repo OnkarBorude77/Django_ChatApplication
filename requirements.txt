@@ -8,3 +8,4 @@ pytz==2025.2
 sqlparse==0.4.4
 dj-database-url==1.0.0
 whitenoise==6.5.0
+psycopg2-binary==2.9.10
