@@ -7,7 +7,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get("SECRET_KEY", "dev-secret")
 DEBUG = os.environ.get("DEBUG", "True") == "True"
-ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
+ALLOWED_HOSTS = os.environ.get(
+    "ALLOWED_HOSTS",
+    "localhost,127.0.0.1,django-chatapplication.onrender.com"
+).split(",")
+
 
 CSRF_TRUSTED_ORIGINS = [
     "https://django-chatapplication.onrender.com"
