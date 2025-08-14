@@ -1,30 +1,24 @@
-# Python
+
 __pycache__/
 *.py[cod]
 *.pyo
 *.pyd
 .Python
 
-# Virtual environment
 venv/
 env/
-myenv/
 
-# Django
 *.sqlite3
 db.sqlite3
 /media
 /staticfiles
 /static/
 
-# Environment variables
 .env
 *.env
 
-# IDE / editor files
 .vscode/
 .idea/
 
-# OS files
 .DS_Store
 Thumbs.db

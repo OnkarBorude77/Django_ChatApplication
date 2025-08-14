@@ -2,10 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 
 class Room(models.Model):
-    """
-    Direct message room created from two usernames in sorted order.
-    e.g. 'alice__bob'
-    """
+   
     name = models.CharField(max_length=255, unique=True)
     participants = models.ManyToManyField(User, related_name="chat_rooms", blank=True)
 

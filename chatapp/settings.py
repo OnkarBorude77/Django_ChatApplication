@@ -11,8 +11,8 @@ ALLOWED_HOSTS = []
 # Apps
 INSTALLED_APPS = [
     'widget_tweaks',
-    "daphne",                 # ASGI server
-    "channels",               # Django Channels
+    "daphne",                 
+    "channels",               
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -54,7 +54,7 @@ TEMPLATES = [
 WSGI_APPLICATION = "chatapp.wsgi.application"
 ASGI_APPLICATION = "chatapp.asgi.application"
 
-# Redis channel layer (install & run Redis locally: 127.0.0.1:6379)
+# Redis channel layer
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels.layers.InMemoryChannelLayer"
@@ -62,7 +62,7 @@ CHANNEL_LAYERS = {
 }
 
 
-# DB (SQLite by default)
+# DB 
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",

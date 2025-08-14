@@ -6,12 +6,10 @@ from chatapp.forms import SignupForm, LoginForm
 from django.contrib.auth.models import User
 
 def home_public(request):
-    # Simple landing for unauthenticated users
     return render(request, "home_public.html")
 
 @login_required
 def home(request):
-    # If logged in, show a tiny "start chat" page: list all other users
     others = User.objects.exclude(id=request.user.id).order_by("username")
     return render(request, "home.html", {"users": others})
 
