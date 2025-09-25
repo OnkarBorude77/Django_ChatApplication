@@ -5,10 +5,8 @@ from channels.auth import AuthMiddlewareStack
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "chatapp.settings")
 
-# First, load Django
 django_asgi_app = get_asgi_application()
 
-# Now safely import routing (Django is ready)
 import chat.routing
 
 application = ProtocolTypeRouter({

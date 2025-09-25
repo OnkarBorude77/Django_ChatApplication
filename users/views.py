@@ -1,17 +1,21 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate
+from django.views.decorators.cache import never_cache
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from chatapp.forms import SignupForm, LoginForm
 from django.contrib.auth.models import User
 
-def home_public(request):
-    return render(request, "home_public.html")
-
+@never_cache
 @login_required
 def home(request):
     others = User.objects.exclude(id=request.user.id).order_by("username")
     return render(request, "home.html", {"users": others})
+
+
+
+def home_public(request):
+    return render(request, "home_public.html")
 
 def signup_view(request):
     if request.method == "POST":
@@ -40,8 +44,9 @@ def login_view(request):
         form = LoginForm()
     return render(request, "login.html", {"form": form})
 
+
 @login_required
 def logout_view(request):
     logout(request)
     messages.success(request, "You have been logged out.")
-    return redirect("login")
+    return redirect("home_public")
